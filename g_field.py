@@ -4,18 +4,15 @@ Python code of Gravitational Search Algorithm (GSA)
 Reference: Rashedi, Esmat, Hossein Nezamabadi-Pour, and Saeid Saryazdi. "GSA: a gravitational search algorithm." 
            Information sciences 179.13 (2009): 2232-2248.	
 Coded by: Iago G. S. (iago.garcia.suarez.ds@gmail.com)
-Original code authors:  Mukesh Saraswat (saraswatmukesh@gmail.com), 
-                        Himanshu Mittal (emailid: himanshu.mittal224@gmail.com)
-                        Raju Pal (emailid: raju3131.pal@gmail.com)
+
 This code is an adaptation with educational purposes and is strongly based on 
-            this implementation: https://github.com/himanshuRepo/Gravitational-Search-Algorithm.git
+            this implementation from Esmat Rashedi in Matlab: https://www.mathworks.com/matlabcentral/fileexchange/27756-gravitational-search-algorithm-gsa
 
 Purpose: Defining the Gravitational Force and acceleration values calculation
 """
 
 import random
 import numpy
-import math
 
 def g_field_calculation(n_agents, n_dims, pos, mass, iter, n_iters, g_const):
     min_k = 2 # The last iteration will take into account 2 agents for the gravitational force.
@@ -34,17 +31,11 @@ def g_field_calculation(n_agents, n_dims, pos, mass, iter, n_iters, g_const):
             if kb_agent != agent: # for j in kbest, j != i
                 x = pos[agent, :] # Solution found by agent
                 y = pos[kb_agent, :] # Solution found by kbest agent
-                # Euclidean distance calculation
-                esum = 0
-                imval = 0
-                for dim in range(0, n_dims):
-                    imval = ((x[dim] - y[dim])** 2)
-                    esum += imval
-                eucl_dist = math.sqrt(esum) 
+                eucl_dist = numpy.linalg.norm(x-y) # Euclidean distance calculation
                 # Sum of all randomly weighted forces acting on agent
                 for dim in range(0, n_dims):
                     rand_num = random.random()
-                    force[agent, dim] = force[agent, dim] + rand_num * mass[kb_agent] * mass[agent] * ((pos[kb_agent, dim]-pos[agent, dim])/(eucl_dist+numpy.finfo(float).eps))
+                    force[agent, dim] = force[agent, dim] + rand_num * mass[kb_agent] * ((pos[kb_agent, dim] - pos[agent, dim])/(eucl_dist + numpy.finfo(float).eps))
     acceleration = numpy.zeros((n_agents, n_dims))
     for agent in range(0, n_agents):
         for dim in range(0, n_dims):
